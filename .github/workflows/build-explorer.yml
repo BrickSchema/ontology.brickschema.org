@@ -76,6 +76,13 @@ jobs:
           npx rdf add file "https://brickschema.org/schema/1.4/Brick" vocab/brick/1.4/Brick.ttl
           npx rdf make site --output public/1.4 -B 1.3
 
+      - name: handle brick 1.5.0 release candidate
+        working-directory: rdf-toolkit/explorer
+        run: |
+          git checkout package.json
+          npx rdf add file "https://brickschema.org/schema/1.5.0/Brick" vocab/brick/1.5.0/Brick.ttl
+          npx rdf make site --output public/1.5.0 -B 1.5.0
+
       - name: rewrite for version navigation
         run: find rdf-toolkit/explorer/public -name "*.html" | xargs -n 1 -P 4 uv run add_versions.py rdf-toolkit/explorer/public
 

@@ -25,6 +25,7 @@ soup = BeautifulSoup(html_content, 'lxml')
 
 # links:
 links = {
+    "Release Candidate (Brick v1.5.0)": "/1.5.0",
     "Current stable (Brick v1.4)": "/",
     "Brick v1.4": "/1.4",
     "Brick v1.3": "/1.3",

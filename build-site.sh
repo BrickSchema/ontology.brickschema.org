@@ -3,7 +3,7 @@
 set -ex
 
 # make an array of Brick versions
-BRICK_VERSIONS="1.3 1.4 1.4.1 1.4.2 1.4.3"
+BRICK_VERSIONS="1.3 1.4 1.4.1 1.4.2 1.4.3 1.4.4 1.5.0"
 
 # Create a temporary directory
 #TEMP_DIR=$(mktemp -d)
@@ -42,9 +42,9 @@ wget -O $CURRENT_DIR/ontologies/brick/latest/Brick.ttl https://github.com/BrickS
 # do the generic version-agnostic stuff first
 cd "$TEMP_DIR/explorer"
 npx rdf add file "https://brickschema.org/schema/Brick" $CURRENT_DIR/ontologies/brick/latest/Brick.ttl
-npx rdf add file "http://qudt.org/2.1/schema/shacl/qudt" $CURRENT_DIR/ontologies/SCHEMA_QUDT_NoOWL-v2.1.ttl
-npx rdf add file "http://qudt.org/2.1/vocab/unit" $CURRENT_DIR/ontologies/VOCAB_QUDT-UNITS-ALL-v2.1.ttl
-npx rdf add file "http://qudt.org/2.1/vocab/quantitykind" $CURRENT_DIR/ontologies/VOCAB_QUDT-QUANTITY-KINDS-ALL-v2.1.ttl
+npx rdf add file "http://qudt.org/3.3.0/schema/shacl/qudt" $CURRENT_DIR/ontologies/SCHEMA_QUDT.ttl
+npx rdf add file "http://qudt.org/3.3.0/vocab/unit" $CURRENT_DIR/ontologies/VOCAB_QUDT-UNITS-ALL.ttl
+npx rdf add file "http://qudt.org/3.3.0/vocab/quantitykind" $CURRENT_DIR/ontologies/VOCAB_QUDT-QUANTITY-KINDS-ALL.ttl
 npx rdf add file "http://www.w3.org/ns/shacl" $CURRENT_DIR/ontologies/shacl.ttl
 npx rdf add file "https://brickschema.org/schema/Brick/ref" $CURRENT_DIR/ontologies/ref-schema.ttl
 npx rdf add file "https://w3id.org/rec" $CURRENT_DIR/ontologies/rec.ttl
@@ -58,7 +58,13 @@ for version in $BRICK_VERSIONS; do
   # put the result in vocab/brick/$version/Brick.ttl
 
   mkdir -p $CURRENT_DIR/ontologies/brick/$version
-  wget -O $CURRENT_DIR/ontologies/brick/$version/Brick.ttl https://brickschema.org/schema/$version/Brick.ttl
+  # if version if 1.5.0 skip the wget and just use the version already in ontologies/brick/1.5.0/Brick.ttl
+  if [ "$version" != "1.5.0" ]; then
+      wget -O $CURRENT_DIR/ontologies/brick/$version/Brick.ttl https://brickschema.org/schema/$version/Brick.ttl
+  else
+      # cp $CURRENT_DIR/ontologies/brick/latest/Brick.ttl $CURRENT_DIR/ontologies/brick/1.5.0/Brick.ttl
+      echo 'skipping download of Brick 1.5.0 since it is already in the ontologies directory'
+  fi
   #./b2.sh $version
     cd "$TEMP_DIR/explorer"
     npx rdf add file "https://brickschema.org/schema/$version/Brick" $CURRENT_DIR/ontologies/brick/$version/Brick.ttl 
